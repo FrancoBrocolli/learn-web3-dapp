@@ -1,3 +1,4 @@
+import {bindConstructorLayout} from '@solana/buffer-layout';
 import SimpleStorageJson from 'contracts/polygon/SimpleStorage/SimpleStorage.json';
 import {ethers} from 'ethers';
 
@@ -6,6 +7,9 @@ declare let window: {
 };
 
 const setValue = async (contractAddress: string, value: number) => {
+  console.log('Ctc ADD: ' + contractAddress);
+  console.log('VALUE: ' + value);
+
   try {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     const signer = provider.getSigner();
@@ -15,11 +19,18 @@ const setValue = async (contractAddress: string, value: number) => {
       SimpleStorageJson.abi,
       signer,
     );
+
+    console.log(contract);
+    console.log(provider);
+    console.log(signer);
+    /// console.log("receipt: " + receipt );
     // try to figure out the expected method
     const transactionResult = await contract.set(value, {gasLimit: 500000});
     const receipt = await transactionResult.wait();
+
     return {hash: receipt.transactionHash};
   } catch (error) {
+    console.log(error);
     return {
       error: error.message,
     };
